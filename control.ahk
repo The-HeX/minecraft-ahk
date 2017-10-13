@@ -78,7 +78,9 @@ GetCoordinates()
 ::drain::
     if(InBuildMode){
             BlockInput, On
-            send / fill ~-%radius% ~-1 ~-%radius% ~%radius% ~-1 ~%radius% air 0 replace water 0{enter}
+            send / 
+            sleep 250 
+            send fill ~-%radius% ~-2 ~-%radius% ~%radius% ~2 ~%radius% air 0 replace water 0{enter}
             sleep 200
             Display( "water drained at a radius of " . radius )
             BlockInput Off
