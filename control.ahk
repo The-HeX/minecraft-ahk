@@ -144,16 +144,51 @@ return
              Display("create circle radius height")
          }
          ;5 circle radius x y z ; [height=1]
+         else if(args.MaxIndex()=5){
+             Display("create circle radius x y z")
+         }
          ;6 circle radius x y z  height         
+         else if(args.MaxIndex()=6){
+             Display("create circle radius x y z  height")
+         }
      }
      else if ( args[1]="ring"){
         ;circle x y z radius [height] [thickness]
+
      }
      else if(args[1]="pyramid"){
         Display("cone is not implemented")
      }
      else if(args[1]="walls"){
-        Display("cone is not implemented")
+        ;walls width height block 
+        if(args.MaxIndex()=4){
+            w:=args[2]
+            x:=Round( W/2)
+            y:=args[3]
+            b:=args[4]
+            
+            sleep 1000
+            send /
+            sleep 250
+            send fill ~-%x% ~ ~-%x% ~%x% ~%y% ~-%x% %b%{enter}
+            sleep 1000
+            send /
+            sleep 250
+            send fill ~-%x% ~ ~%x%  ~%x%  ~%y% ~%x%  %b%{enter}
+            sleep 1000
+            send /
+            sleep 250
+            send fill ~-%x% ~ ~-%x% ~-%x% ~%y% ~%x% %b%{enter}
+            sleep 1000
+            send /
+            sleep 250
+            send fill ~%x%  ~ ~-%x%  ~%x%  ~%y% ~%x%  %b%{enter}
+            sleep 250
+            Display("walls created")
+        }
+        ;walls width length height bock 
+        ;walls x y z width length height block
+        return
      }
      else if(args[1]="sphere"){
         Display("cone is not implemented")
