@@ -164,31 +164,38 @@ return
      else if(args[1]="walls"){
         ;walls width height block 
         if(args.MaxIndex()=4){
+            BlockInput On
             w:=args[2]
-            x:=Round( W/2)
-            y:=args[3]
-            b:=args[4]
-            
-            sleep 1000
-            send /
-            sleep 250
-            send fill ~-%x% ~ ~-%x% ~%x% ~%y% ~-%x% %b%{enter}
-            sleep 1000
-            send /
-            sleep 250
-            send fill ~-%x% ~ ~%x%  ~%x%  ~%y% ~%x%  %b%{enter}
-            sleep 1000
-            send /
-            sleep 250
-            send fill ~-%x% ~ ~-%x% ~-%x% ~%y% ~%x% %b%{enter}
-            sleep 1000
-            send /
-            sleep 250
-            send fill ~%x%  ~ ~-%x%  ~%x%  ~%y% ~%x%  %b%{enter}
-            sleep 250
-            Display("walls created")
+            h:=args[3]
+            b:=args[4]        
+            Walls(w,w,h,b,"~","~","~")
+            ; Fill(-x, 0,-z, x, y,-z, b)
+            ; Fill(-x, 0, z, x, y, z, b)
+            ; Fill(-x, 0,-z,-x, y, z, b)
+            ; Fill( x, 0,-z, x, y, z, b)
+            ; Display("walls created")
+            BlockInput Off
         }
         ;walls width length height bock 
+        else if(args.MaxIndex()=5){
+            BlockInput On
+            w:=args[2]
+            l:=args[3]
+            h:=args[4]
+            b:=args[5]
+            Walls(w,w,h,b,"~","~","~")
+            ; x:=Round(w/2)
+            ; z:=Round(l/2)
+            ; y:=Round(h)
+            
+            ; Fill(-x, 0,-z, x, y,-z, b)
+            ; Fill(-x, 0, z, x, y, z, b)
+            ; Fill(-x, 0,-z,-x, y, z, b)
+            ; Fill( x, 0,-z, x, y, z, b)
+            ; Display("walls created")
+            BlockInput Off
+        }
+        
         ;walls x y z width length height block
         return
      }
@@ -204,6 +211,26 @@ return
 
  return
 
+Walls(w,l,h,b,cx,cy,cz){
+        x:=Round(w/2)
+        z:=Round(l/2)
+        y:=Round(h-1)
+        
+        Fill(cx+(x*-1), cy+0,cz+(z*-1),cx+x     , cy+y,cz+(z*-1), b)
+        Fill(cx+(x*-1), cy+0,cz+z     ,cx+x     , cy+y,cz+z     , b)
+        Fill(cx+(x*-1), cy+0,cz+(z*-1),cx+(x*-1), cy+y,cz+z     , b)
+        Fill(cx+x     , cy+0,cz+(z*-1),cx+x     , cy+y,cz+z     , b)
+        Display("walls created")    
+}
+
+Fill(x1,y1,z1,x2,y2,z2,block){
+    sleep 100
+    send /
+    sleep 250
+    send fill ~%x1% ~%y1% ~%z1% ~%x2% ~%y2% ~%z2% %block%{enter}
+    sleep 500
+    return
+}
 
 :?:/clone::
     x1:=point1[1]+0
