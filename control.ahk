@@ -129,7 +129,7 @@ g::
     }
 return 
 
-::create::
+::/create::
      send create{space}
      input userInput , V, {enter}
           
@@ -169,11 +169,6 @@ return
             h:=args[3]
             b:=args[4]        
             Walls(w,w,h,b,"~","~","~")
-            ; Fill(-x, 0,-z, x, y,-z, b)
-            ; Fill(-x, 0, z, x, y, z, b)
-            ; Fill(-x, 0,-z,-x, y, z, b)
-            ; Fill( x, 0,-z, x, y, z, b)
-            ; Display("walls created")
             BlockInput Off
         }
         ;walls width length height bock 
@@ -183,20 +178,24 @@ return
             l:=args[3]
             h:=args[4]
             b:=args[5]
-            Walls(w,w,h,b,"~","~","~")
-            ; x:=Round(w/2)
-            ; z:=Round(l/2)
-            ; y:=Round(h)
-            
-            ; Fill(-x, 0,-z, x, y,-z, b)
-            ; Fill(-x, 0, z, x, y, z, b)
-            ; Fill(-x, 0,-z,-x, y, z, b)
-            ; Fill( x, 0,-z, x, y, z, b)
-            ; Display("walls created")
+            Walls(w,l,h,b,"~","~","~")
             BlockInput Off
         }
-        
         ;walls x y z width length height block
+        else if(args.MaxIndex()=8){
+            BlockInput On
+            x:=args[2]
+            y:=args[3]
+            z:=args[4]
+            w:=args[5]
+            l:=args[6]
+            h:=args[7]
+            b:=args[8]
+            Walls(w,l,h,b,x,y,z)
+            BlockInput Off            
+        }
+        
+        
         return
      }
      else if(args[1]="sphere"){
