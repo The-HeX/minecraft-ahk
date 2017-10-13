@@ -6,28 +6,38 @@
 global x1,y1,z1
 global x2,y2,z2
 global radius := 3
+global InBuildMode:=False
 
 gosub reset
+
+F2::
+    InBuildMode:=!InBuildMode
+    if (InBuildMode) {
+        Display("Build mode is on.")
+    } else {
+        Display("Build mode is off.")
+    }
+return 
+
 
 ^z::
     gosub reset
     return 
 
 reset:
-    global point1 := [0,0,0]
-    global point2 := [0,0,0]
-return
+        global point1 := [0,0,0]
+        global point2 := [0,0,0]
+    return
 
 ::/pos1::
-    point1:=GetCoordinates()
-return
+        point1:=GetCoordinates()
+    return
 
 ::/pos2::
-    point2:=GetCoordinates()
-return
+        point2:=GetCoordinates()
+    return
 
 ::/s circle::
-
 return 
 
 GetCoordinates()
@@ -44,28 +54,119 @@ GetCoordinates()
     sleep 100
     send /tell @s %result% {enter}
     r:= StrSplit(result," ")
-
 }
 
 =::
- radius+=1
- send /tell @s radius updated to %radius%{enter}
-return
+    if(InBuildMode){
+            radius+=1
+            Display( "radius updated to " . radius )
+    }
+    else{
+        send =
+    }
+    return
 
 -::
- radius-=1
- send /tell @s radius updated to %radius%{enter}
-return 
+    if(InBuildMode){
+        radius-=1
+        Display( "radius updated to " . radius )
+    }else{
+        send -
+    }
+    return
 
+::drain::
+    if(InBuildMode){
+            BlockInput, On
+            send / fill ~-%radius% ~-1 ~-%radius% ~%radius% ~-1 ~%radius% air 0 replace water 0{enter}
+            sleep 200
+            Display( "water drained at a radius of " . radius )
+            BlockInput Off
+    }else{
+        send drain
+    }
+    return 
+return 
 g::
-    send / fill ~-%radius% ~ ~-%radius% ~%radius% ~%radius% ~%radius% air{enter}
-    sleep 100
-    send / fill ~-%radius% ~-1 ~-%radius% ~%radius% ~-1 ~%radius% grass{enter}
+    if(InBuildMode){
+            BlockInput, On
+            send / fill ~-%radius% ~-1 ~-%radius% ~%radius% ~-1 ~%radius% grass 0 replace dirt{enter}
+            sleep 100
+            send / fill ~-%radius% ~-1 ~-%radius% ~%radius% ~-1 ~%radius% grass 0 replace stone{enter}
+            sleep 200
+            Display( "replaced grass to a radius of " . radius )
+            BlockInput Off
+    }else{
+        send g
+    }
+    return 
+
++c::
+    if(InBuildMode){
+            BlockInput On
+            send / fill ~-%radius% ~ ~-%radius% ~%radius% ~%radius% ~%radius% air{enter}
+            sleep 200
+            Display( "cleared blocks to a radius of " . radius )
+            BlockInput Off
+    }
+
+    return 
+
++v::
+    if(InBuildMode){
+            BlockInput On
+            Loop %radius% {
+                y := A_Index - 1
+                dist:=radius + y
+                ;this needs to be turned into a circle instead of a square, the end shape is still unnatural
+                send / fill ~-%dist% ~%y% ~-%dist% ~%dist% ~%y% ~%dist% air{enter}
+                sleep 200
+            }
+            Display( "cleared blocks to a radius of " . radius )
+            BlockInput Off
+    }
 return 
 
-c::
-    send / fill ~-%radius% ~ ~-%radius% ~%radius% ~%radius% ~%radius% air{enter}
-return 
+::create::
+     send create{space}
+     input userInput , V, {enter}
+          
+     args := StrSplit(userInput , A_Space , A_Space)
+     ;Display(args.MaxIndex())
+     if ( args[1]="circle"){
+         ;circle radius [x y z]  [height]
+         ;2 circle radius  ;  [x y z= ~ ~ ~]  [height=1]
+         if(args.MaxIndex()=2){
+             Display("create circle radius")
+         }
+         ;3 circle radius height
+         else if(args.MaxIndex()=3){
+             Display("create circle radius height")
+         }
+         ;5 circle radius x y z ; [height=1]
+         ;6 circle radius x y z  height         
+     }
+     else if ( args[1]="ring"){
+        ;circle x y z radius [height] [thickness]
+     }
+     else if(args[1]="pyramid"){
+        Display("cone is not implemented")
+     }
+     else if(args[1]="walls"){
+        Display("cone is not implemented")
+     }
+     else if(args[1]="sphere"){
+        Display("cone is not implemented")
+     }
+     else if(args[1]="box"){
+        Display("cone is not implemented")
+     }
+     else if(args[1]="cone"){
+        Display("cone is not implemented")
+     }
+
+ return
+
 
 :?:/clone::
     x1:=point1[1]+0
@@ -99,3 +200,11 @@ sendkey(key){
     }
 }
 
+Display(message){
+    BlockInput On
+    send /
+    sleep 100
+    send tell @s %message%{enter}
+    sleep 100
+    BlockInput Off
+}
